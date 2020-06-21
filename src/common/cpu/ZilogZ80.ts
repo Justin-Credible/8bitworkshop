@@ -782,12 +782,11 @@ let do_hl_add = function(operand)
 
 let do_hl_adc = function(operand)
 {
-   operand += flags.C;
-   var hl = l | (h << 8), result = hl + operand;
+   var hl = l | (h << 8), result = hl + operand + flags.C;
    
    flags.S = (result & 0x8000) ? 1 : 0;
    flags.Z = !(result & 0xffff) ? 1 : 0;
-   flags.H = (((hl & 0x0fff) + (operand & 0x0fff)) & 0x1000) ? 1 : 0;
+   flags.H = (((hl & 0x0fff) + (operand & 0x0fff) + flags.C) & 0x1000) ? 1 : 0;
    flags.P = ((hl & 0x8000) === (operand & 0x8000)) && ((result & 0x8000) !== (hl & 0x8000)) ? 1 : 0;
    flags.N = 0;
    flags.C = (result & 0x10000) ? 1 : 0;
